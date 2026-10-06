@@ -134,4 +134,481 @@ window.SEED_DATA = {
         }
       },
       "context": {
-        "age": "2
+        "age": "20 (Sophomore)",
+        "role": "Starter, primary ball-handler in a structured system.",
+        "competition": "High-major conference; tested against multiple tournament-level guards.",
+        "physicalGrowth": "Frame can add strength; question is whether quickness holds as he fills out.",
+        "mentalAdaptability": "Stays within role; hasn't yet been asked to carry a heavy creation load.",
+        "referencePoints": "Positive: low-usage backup PGs who survive on IQ and shooting. Caution: guards whose lack of burst got exposed at the next level."
+      },
+      "updatedAt": 0
+    },
+    {
+      "id": "p_sample_rowe",
+      "name": "[SAMPLE] Marcus Rowe",
+      "level": "NBA",
+      "position": "SF",
+      "team": "Free agent sample",
+      "vitals": {
+        "height": "6'7\"",
+        "weight": "215",
+        "age": "24",
+        "classYear": "",
+        "handedness": "Right"
+      },
+      "objective": "Switchable wing with real two-way utility. Floor is a defensive-minded reserve; ceiling depends on whether the jumper stabilizes enough to stay on the floor late.",
+      "role": "3-and-D wing reserve; emergency small-ball 4 in specific matchups.",
+      "strengths": [
+        "Defends positions 1 through 4 without scheme help.",
+        "Reads passing lanes and converts turnovers into transition offense.",
+        "Will 100% accept a low-usage, connective role."
+      ],
+      "questions": [
+        "Is the corner three reliable enough to punish defenses that help off him?",
+        "Can he hold up as a small-ball 5 in playoff settings?"
+      ],
+      "analysis": {
+        "shooting": {
+          "mechanics": "",
+          "rangeVolume": "Career ~34% from three, almost all corner + catch-and-shoot; low volume.",
+          "shotSelection": "Disciplined; almost no pull-up threes.",
+          "offMovement": ""
+        },
+        "creation": {
+          "changeOfPace": "",
+          "separation": "",
+          "finishing": "Finishes through contact in the restricted area; limited above-the-rim package.",
+          "selfVsScheme": ""
+        },
+        "passing": {
+          "liveVision": "",
+          "processing": "",
+          "decisions": "Makes the simple swing pass; not a playmaker.",
+          "feel": ""
+        },
+        "defense": {
+          "onBall": "Slides feet with guards; contests without fouling.",
+          "offBall": "Strong rotations; recovers from help on time.",
+          "versatility": "Guards 1-4 comfortably; cross-matches onto stars without breaking the scheme.",
+          "effort": "Consistent motor on the defensive end."
+        },
+        "athletic": {
+          "sizeLength": "6'7\" with a 6'11\" wingspan - plus length for the wing.",
+          "speed": "",
+          "vertical": "",
+          "strength": "Carries 215 well; absorbs contact."
+        },
+        "rebounding": {
+          "boxOut": "",
+          "timing": ""
+        },
+        "screening": "",
+        "physicality": "",
+        "offball": {
+          "cutting": "",
+          "spacing": "Spaces to the correct corners; doesn't clog.",
+          "relocation": "",
+          "navigation": ""
+        },
+        "makeup": {
+          "motor": "",
+          "coachability": "",
+          "adversity": "",
+          "leadership": ""
+        }
+      },
+      "context": {
+        "age": "24",
+        "role": "Reserve wing; defensive specialist.",
+        "competition": "NBA; nightly assignments vs high-usage wings.",
+        "physicalGrowth": "Near finished product physically.",
+        "mentalAdaptability": "Embraces role; limited upside to expand usage.",
+        "referencePoints": "Positive: switchable 3-and-D wings who carved long careers. Caution: wings whose jumper never stabilized and got played off the floor."
+      },
+      "updatedAt": 0
+    },
+    {
+      "id": "p_msjh3xxkszzk",
+      "name": "Ajay Mitchell",
+      "team": "Okc Thunder",
+      "level": "NBA",
+      "position": "SG",
+      "vitals": {
+        "height": "6-4",
+        "weight": "190",
+        "age": "24",
+        "classYear": "2024",
+        "handedness": "Left"
+      },
+      "objective": "Spark plug Combo guard creative finishing, displays poise under pressure. Frame, broad shoulders. Average straight line driver at the professional level not known for athleticism bur serves a complimentary secondary ball handl rotational guard. If needed capable to making immediate impact as a starter.",
+      "role": "Backup combo guard, shot creator (spark plug)",
+      "analysis": {
+        "shooting": {
+          "mechanics": "",
+          "rangeVolume": "",
+          "shotSelection": "",
+          "offMovement": ""
+        },
+        "creation": {
+          "changeOfPace": "",
+          "separation": "",
+          "finishing": "",
+          "selfVsScheme": ""
+        },
+        "passing": {
+          "liveVision": "",
+          "processing": "",
+          "decisions": "",
+          "feel": ""
+        },
+        "defense": {
+          "onBall": "",
+          "offBall": "",
+          "versatility": "",
+          "effort": ""
+        },
+        "athletic": {
+          "sizeLength": "",
+          "speed": "",
+          "vertical": "",
+          "strength": ""
+        },
+        "rebounding": {
+          "boxOut": "",
+          "timing": ""
+        },
+        "screening": "",
+        "physicality": "",
+        "offball": {
+          "cutting": "",
+          "spacing": "",
+          "relocation": "",
+          "navigation": ""
+        },
+        "makeup": {
+          "motor": "",
+          "coachability": "",
+          "adversity": "",
+          "leadership": ""
+        }
+      },
+      "context": {
+        "age": "",
+        "role": "",
+        "competition": "",
+        "physicalGrowth": "",
+        "mentalAdaptability": "",
+        "referencePoints": ""
+      },
+      "strengths": [
+        "Shooting"
+      ],
+      "questions": [],
+      "updatedAt": 1786141263883
+    },
+    {
+      "id": "p_msuu1gdc3q71",
+      "name": "Yuki Kawamura (Exhibit-10)",
+      "team": "Ontario Clippers (LA Clippers)",
+      "level": "G-League",
+      "position": "PG",
+      "vitals": {
+        "height": "5-7",
+        "weight": "159",
+        "age": "25",
+        "classYear": "Undrafted (2025)",
+        "handedness": "Right"
+      },
+      "objective": "Playmaking guard stands out in the open court. Passes with feel on pick and roll combined with dribble penetration, with on the catch fast breaks attacking closing out with average foot speed utilizing his height to get around defender. At his size timely passes will be critical. His development on staying on the floor will be depended on being efficient in all areas of the court while being able to set up an offense while have a low turn over rate especially at his size with being able to being reliable shooter on catch and shoots.",
+      "role": "Developmental 2 way playmaker",
+      "analysis": {
+        "shooting": {
+          "mechanics": "Narrow base one motion shooter, with a middle set point motion is consistent form.",
+          "rangeVolume": "Deep range, but relies heavily on quick-touch sequences (56.9% of shots taken in <2 seconds of touch time).",
+          "shotSelection": "Highly space-dependent shot diet. Converts efficiently when left wide open (45.1% frequency on 6+ ft defender space), but efficiency drops sharply under tight coverage (21.6% frequency in 2-4 ft defender proximity). Rarely forces bad looks inside 10 feet. Likes to decelerate from the pick and roll and let the ball defender catch up to force a shooting foul. Likes to find the gaps around the elbow area for a pull up or in one on one situations likes to do turnaround fadeaway as a counter",
+          "offMovement": "Clear preference for stationary catch-and shoot looks (41.2% 3PA volume, 50.0 eFG%). While he takes a notable amount of off dribble pull ups (45.1% of overall field goals), they yield an inefficient 30.4 FG% against aggressive closing defenders."
+        },
+        "creation": {
+          "changeOfPace": "Utilizes creations with initial quick to probe defensive seam rather than pure traditional modern gear shifting. Operates best in short windows (31.4% frequency in the 2-6 second range) with above average pace for just enough of a window for his quick release",
+          "separation": "Attacking downhill uses turnaround fadeaways. Employs step backs and side steps to create small operational windows, but lacks the elite burst or length to separate cleanly on extended drives (31.4% combined frequency on 3+ dribble possessions).",
+          "finishing": "Low volume interior finishing profile, taking just 13.7% of total shots within 10 feet. Relies heavily on high arc running floaters (42.9 FG% under 10ft) to avoid rim protectors rather than initiating physical contact at the rim.",
+          "selfVsScheme": "Will need proper spacing to be capable to get a look, while he can get off pull up shots (37.2% 2FG% on pull-ups), true offensive value is unlocked when paired with primary playmakers who draw defense away to create wide open catch and shoot opportunities. More dribbling in ball pressure isos efficiency drops to 33.3 percent."
+        },
+        "passing": {
+          "liveVision": "High level peripheral iq passing with good live ball dribbling speed delivers timely passing creating paint touches delivers with precision and creativity on the break wtih pocket passes, skip passes",
+          "processing": "Instant processing speed understanding where his teammates are on the floor knowing the kind of passes needed in situations",
+          "decisions": "Maintains composure when blitzed or trapped on pick-and-rolls, leveraging low center of gravity to slip passes through tight seam coverage. Rarely gets caught picking up his dribble prematurely in high pressure scenarios.",
+          "feel": "Advanced manipulate-and-deliver playmaker. Uses eye fakes and head turns to pull secondary rim protectors out of position before delivering perfectly timed hit-ahead or pocket passes."
+        },
+        "defense": {
+          "onBall": "Isnt someone you would assign guarding on ball primary ball handlers (21 percent), best used off the ball as the disruptor with timely body positioning.",
+          "offBall": "2.3% deflections",
+          "versatility": "",
+          "effort": ""
+        },
+        "athletic": {
+          "sizeLength": "",
+          "speed": "Pro level speed staying close to the floor",
+          "vertical": "Relies on floaters runners and high arc shots",
+          "strength": "Maxed out will have compromise core quickness to gain more weight in the short term"
+        },
+        "rebounding": {
+          "boxOut": "Makes the effort hitting the legs early on long rebounds but size will always be a concern",
+          "timing": ""
+        },
+        "screening": "",
+        "physicality": "",
+        "offball": {
+          "cutting": "",
+          "spacing": "",
+          "relocation": "",
+          "navigation": ""
+        },
+        "makeup": {
+          "motor": "",
+          "coachability": "",
+          "adversity": "",
+          "leadership": "Vocal Floor general composed competitor not letting the height be an excuse to not make the right plays brings a uptempo presence and the kind of player that teammate, fans cheer for when he makes an exciting play"
+        }
+      },
+      "context": {
+        "age": "",
+        "role": "",
+        "competition": "",
+        "physicalGrowth": "",
+        "mentalAdaptability": "",
+        "referencePoints": ""
+      },
+      "strengths": [
+        "Paint touches(downhill attack).",
+        "Playmaking",
+        "Low turnover rate"
+      ],
+      "questions": [
+        "Undersized will need constant help and be targeted in actions",
+        "Outlier small physical profile (5'7\", ~159 lbs) with limited functional reach. Severe physical baseline barrier for contesting shots or absorbing perimeter contact at the NBA level."
+      ],
+      "updatedAt": 1788256598095
+    },
+    {
+      "id": "p_mtjdorkhdhe1",
+      "name": "Daron Holmes II (Micro Sample NBA report)",
+      "team": "Denver Nuggets",
+      "level": "NBA",
+      "position": "PF",
+      "vitals": {
+        "height": "6-10",
+        "weight": "225",
+        "age": "24",
+        "classYear": "2024",
+        "handedness": "Right"
+      },
+      "objective": "Strong wide frame, long length (WS: 7-1) mobile for his position at 6-9, impacts the game as a stretch pick and pop big (current role) going into his second year pro playing wise, from playing 25 gms averaging 8.4 minutes capable of running the floor with exceptional footwork rolling and a dump off finisher.",
+      "role": "Mobile Skilled Stretch Big",
+      "analysis": {
+        "shooting": {
+          "mechanics": "Deep squat wide balance base high arching shot",
+          "rangeVolume": "Pure stretch 5 shot efficient elite perimeter volume (0.74 3 point attempt rate) 45-61 total field goals from beyond the arc converting at 44.4 percent",
+          "shotSelection": "Ultra efficient, modernized big-man shot diet (+11.6% relative True Shooting). Completely eliminates low-value mid-range attempts (only 4 total mid-range shots), strictly dividing his looks between pick-and-pop 3s and rim finishes.",
+          "offMovement": "Stationary play finishing spacing threat. Operates primarily as a pick-and-pop option off driver kickouts, maintaining a 69.4% True Shooting mark without needing complex off-ball screen actions."
+        },
+        "creation": {
+          "changeOfPace": "Straight line driver who relies on face-up pump fakes and initial burst rather than dynamic dribble deceleration. Operates best attacking aggressive (over commit) perimeter closeouts especially on bigger foot big men",
+          "separation": "",
+          "finishing": "Highly effective play finisher around the basket, converting 66.7% at the rim. Holds a 0.23 Free Throw Rate (FTR) and converts 78.6% from the line, proving functional physical resilience when absorbing contact.",
+          "selfVsScheme": "Functions purely as a play-finisher and floor spacing outlet rather than an isolated scorer off the bounce."
+        },
+        "passing": {
+          "liveVision": "Solid secondary connector showcasing vision as a short roll playmaker with drop off backdoors and cross court passes the post.",
+          "processing": "Fast, serviceable decisive decision maker. Low turnover economy (-0.2 OTOV) with a low pass-turnover rate (9.4% PASSTOV), keeping the ball humming without stalling offensive sets.",
+          "decisions": "",
+          "feel": ""
+        },
+        "defense": {
+          "onBall": "",
+          "offBall": "Positive rim protection impact metrics, holding opponents to -2.1% below their average shooting percentage on 43 rim contests (RIMDFGA). Shows strong vertical timing as a secondary help defender.",
+          "versatility": "Functional 4/5 defensive hybrid. Mobility allows him to play in drop coverage, hedge and recover, or execute short burst switching schemes without becoming an exploit target. Can stay upright on straight path to contest without fouling",
+          "effort": "Disciplined positional defender who avoids cheap fouls (8.6% Foul Rate). Processes team rotational coverages quickly, leading to low mistake defensive execution."
+        },
+        "athletic": {
+          "sizeLength": "",
+          "speed": "",
+          "vertical": "",
+          "strength": ""
+        },
+        "rebounding": {
+          "boxOut": "Uses a body first box out method to seal interior drivers, recording a 10.6% DRB%. His out of area defensive rebounding reach is limited when pulled out to cover perimeter assignments.",
+          "timing": "Demonstrates quick two-foot pop and vertical leap to crash for high-point rebounds. Anticipates long rebounds effectively off pick-and-pop actions, generating tap outs to reset possession"
+        },
+        "screening": "",
+        "physicality": "Absorbs contact inside while maintaining verticality and discipline, avoiding unnecessary reach ins. Keeps a low foul rate (8.6% Foul%) while contesting physical bigs",
+        "offball": {
+          "cutting": "",
+          "spacing": "",
+          "relocation": "",
+          "navigation": ""
+        },
+        "makeup": {
+          "motor": "Open to do the work learn ask questions.",
+          "coachability": "",
+          "adversity": "",
+          "leadership": ""
+        }
+      },
+      "context": {
+        "age": "",
+        "role": "",
+        "competition": "",
+        "physicalGrowth": "",
+        "mentalAdaptability": "",
+        "referencePoints": ""
+      },
+      "strengths": [
+        "Post sealing position",
+        "Rolling finishes",
+        "Shooting",
+        "Post defense"
+      ],
+      "questions": [],
+      "updatedAt": 1788425079143
+    },
+    {
+      "id": "p_mtlbzn2adks3",
+      "name": "Adou Thiero(NBA assigment)",
+      "team": "South Bay Lakers/ LA Lakers",
+      "level": "G-League",
+      "position": "SF",
+      "vitals": {
+        "height": "6-7",
+        "weight": "220",
+        "age": "22.3",
+        "classYear": "2025 Round 2, Pick 36",
+        "handedness": "Right"
+      },
+      "objective": "A 6-7 strong, 7-0 WS, explosive dynamic athletic off either foot primarily 2 for a vertical pop and lateral quickness, a modern physical hybrid wing undersize in PF position. Overall high motor energizer that makes a current impact with defensive interceptor, transition runner and a second chance oppurtunitist with putbacks, a current raw skill set, developing feel at the NBA with a cut and finish play-style at the pro level.",
+      "role": "Fringe Rotation / Energy Defensive Wing (Two-Way Target)",
+      "analysis": {
+        "shooting": {
+          "mechanics": "",
+          "rangeVolume": "",
+          "shotSelection": "",
+          "offMovement": ""
+        },
+        "creation": {
+          "changeOfPace": "",
+          "separation": "",
+          "finishing": "",
+          "selfVsScheme": ""
+        },
+        "passing": {
+          "liveVision": "",
+          "processing": "",
+          "decisions": "",
+          "feel": ""
+        },
+        "defense": {
+          "onBall": "",
+          "offBall": "",
+          "versatility": "",
+          "effort": ""
+        },
+        "athletic": {
+          "sizeLength": "",
+          "speed": "",
+          "vertical": "",
+          "strength": ""
+        },
+        "rebounding": {
+          "boxOut": "",
+          "timing": ""
+        },
+        "screening": "",
+        "physicality": "",
+        "offball": {
+          "cutting": "",
+          "spacing": "",
+          "relocation": "",
+          "navigation": ""
+        },
+        "makeup": {
+          "motor": "",
+          "coachability": "",
+          "adversity": "",
+          "leadership": ""
+        }
+      },
+      "context": {
+        "age": "",
+        "role": "",
+        "competition": "",
+        "physicalGrowth": "",
+        "mentalAdaptability": "",
+        "referencePoints": ""
+      },
+      "strengths": [
+        "Athleticism",
+        "Motor",
+        "Disruptor"
+      ],
+      "questions": [
+        "Offense Consistency(shooting)",
+        "Shot creation counters",
+        "Defensive Discipline",
+        "With an expected increase role out of need will the motor maintained or will he hit a wall and how does he respond"
+      ],
+      "updatedAt": 1788791735352
+    }
+  ],
+  "boards": {
+    "NBA": {
+      "overall": [
+        "p_sample_rowe"
+      ],
+      "shooters": [],
+      "defenders": [
+        "p_sample_rowe"
+      ],
+      "guards": [],
+      "wings": [
+        "p_sample_rowe"
+      ],
+      "bigs": [],
+      "twoway": [
+        "p_sample_rowe"
+      ]
+    },
+    "College": {
+      "overall": [
+        "p_sample_carter"
+      ],
+      "shooters": [
+        "p_sample_carter"
+      ],
+      "defenders": [],
+      "guards": [
+        "p_sample_carter"
+      ],
+      "wings": [],
+      "bigs": [],
+      "twoway": []
+    },
+    "G-League": {
+      "overall": [],
+      "shooters": [],
+      "defenders": [],
+      "guards": [],
+      "wings": [],
+      "bigs": [],
+      "twoway": []
+    },
+    "International": {
+      "overall": [],
+      "shooters": [],
+      "defenders": [],
+      "guards": [],
+      "wings": [],
+      "bigs": [],
+      "twoway": []
+    }
+  }
+};
