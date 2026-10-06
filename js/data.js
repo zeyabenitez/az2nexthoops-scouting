@@ -170,7 +170,22 @@ window.SEED_DATA = {
         "classYear": "2025 Round 2, Pick 36",
         "handedness": "Right"
       },
-      "objective": "Explosive dynamic athletic wing with high motor.",
-      "role": "Fringe Rotation / Energy Defensive Wing",
-      "analysis": {},
-      "context": {},
+     "objective": "Explosive dynamic athletic wing with high motor.",
+    "role": "Fringe Rotation / Energy Defensive Wing",
+    "analysis": {},
+    "context": {},
+    "strengths": [
+      "Athleticism",
+      "Motor"
+    ],
+    "questions": [],
+    "updatedAt": 1788791735352
+  }
+  ],
+  "boards": {
+    "NBA": { "overall": [], "shooters": [], "defenders": [], "guards": [], "wings": [], "bigs": [], "twoway": [] },
+    "College": { "overall": [], "shooters": [], "defenders": [], "guards": [], "wings": [], "bigs": [], "twoway": [] },
+    "G-League": { "overall": [], "shooters": [], "defenders": [], "guards": [], "wings": [], "bigs": [], "twoway": [] },
+    "International": { "overall": [], "shooters": [], "defenders": [], "guards": [], "wings": [], "bigs": [], "twoway": [] }
+  }
+};
