@@ -1,6 +1,3 @@
-const supabaseUrl = 'https://csslqhrpukrbzefnulvd.supabase.co';
-const supabaseKey = 'sb_publishable_siiRdauYbyeSBBtXPPTx2Q_dzFbnIeQ';
-const supabase = supabasejs.createClient(supabaseUrl, supabaseKey);
 /* =====================================================================
    AZ2NEXTHOOPS — app logic
    - Public, read-only scouting site (Reports + Ranked Boards).
