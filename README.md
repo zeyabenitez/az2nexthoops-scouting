@@ -26,8 +26,8 @@ Boards, open any report, and print/save a report as PDF. They **cannot** edit an
 ### Step A — Unlock the editor
 Click the **Editor** (lock) button in the header and enter your password.
 
-> Default password: **`az2next`**
-> Change it in `js/app.js` — find `ADMIN_PASSWORD = "az2next"` near the top and set your own.
+> The password is set in `js/app.js`.
+> Change it in `js/app.js` — find `ADMIN_PASSWORD` near the top and set your own.
 
 When unlocked, an **Editor** bar appears and you'll see **+ Add Report**, **Edit**, and
 board-management controls. No one else sees these.
