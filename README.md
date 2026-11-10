@@ -24,10 +24,9 @@ Boards, open any report, and print/save a report as PDF. They **cannot** edit an
 ## 2. Editing (you only)
 
 ### Step A — Unlock the editor
-Click the **Editor** (lock) button in the header and enter your password.
-
-> The password is set in `js/app.js`.
-> Change it in `js/app.js` — find `ADMIN_PASSWORD` near the top and set your own.
+Click the **Editor** (lock) button in the header and enter your password. The password is
+checked on the server. Set the `ADMIN_PASSWORD` environment variable in Netlify to change it.
+The editor stays unlocked until you lock it or close the browser tab.
 
 When unlocked, an **Editor** bar appears and you'll see **+ Add Report**, **Edit**, and
 board-management controls. No one else sees these.
@@ -37,31 +36,30 @@ board-management controls. No one else sees these.
 2. Fill the form:
    - **Identity:** name, level, position, team.
    - **Vitals:** height, weight, age, class/year, handedness.
-   - **Objective Statement** (required) — your one-paragraph lens.
+   - **Objective Statement** (required): your one-paragraph lens.
    - **Projected Role.**
    - **Strengths** and **Questions** (add as many lines as you want).
-   - **Analysis** — open any of the 8 pillars (Shooting, Shot Creation & Handle, Passing &
-     Feel, Defense, Athletic Tools, Rebounding & Screening, Off-Ball Movement, Makeup &
-     Intangibles) and fill the sub-fields. **Leave blank what you don't use** — empty
-     sections simply don't appear, keeping reports clean.
-   - **Scout context** (internal) — age, role, competition, physical growth, mental
-     adaptability, reference points. **These never appear on the public report.**
-3. Click **Save report.** Edits are saved automatically to your browser.
+   - **Analysis:** open any of the 8 pillars and fill the sub-fields. **Leave blank what you
+     don't use.** Empty sections don't appear on the report.
+   - **Scout context** (internal). **These never appear on the public report.**
+3. Click **Save report.** It saves straight to the live database.
 
 ### Step C — Build ranked boards
-Go to **Boards**, pick a **Level** and a **Board** (e.g. NBA → Best Shooters), then use the
-**Manage this board** panel to add players, and reorder them with the **▲ ▼** buttons.
+Go to **Boards**, pick a **Level** and a **Board**, then use the **Manage this board** panel to
+add players and reorder them with the **▲ ▼** buttons. Every change saves right away.
 - Boards only let you choose players from that level.
-- Guards/Wings/Bigs boards are restricted to matching positions, so nothing gets mixed.
+- Guards/Wings/Bigs boards are restricted to matching positions. If you change a player's
+  level or position, they're taken off boards they no longer fit.
 
-### Step D — Publish to make changes public
-Edits live in your browser until you publish them:
-1. Click **Publish (download data.js)** in the Editor bar. A new `data.js` downloads.
-2. Replace the **`js/data.js`** file on your host with the downloaded one.
-3. On any other device/browser, open the site and click **Sync from file** to load the
-   latest published data.
+### Live sync across devices
+All reports and boards are stored in one shared database, so phone (Safari), desktop
+(Chrome, Firefox, Edge) and every visitor see the same data. There's nothing to publish or
+upload. Open pages refresh when you switch back to the tab and every 30 seconds while
+visible. Use **Refresh** in the Editor bar to pull the latest right away.
 
-That's it — no code to write for normal day-to-day editing.
+If a browser still has edits saved from the old "save to this browser" version, you're
+offered a one-time **Import** after unlocking the editor. Only copies newer than the
+database version are uploaded, and the old browser copy is then cleared.
 
 ---
 
@@ -72,17 +70,14 @@ Upload the whole `az2nexthoops/` folder to any static host:
 - **Netlify** — drag the folder into Netlify Drop, or connect the repo.
 - **Cloudflare Pages / Vercel** — connect a repo and deploy as-is.
 
-To update later: edit in the browser → **Publish** → upload the new `js/data.js`.
+Edits go live as soon as you save. No re-upload needed.
 
 ---
 
-## 4. A note on the password (please read)
-The editor password is checked in the browser, so it **hides editing from casual visitors**
-but is not military-grade (anyone extremely determined could read it in the source). This is
-standard for a self-contained site with no server. If you ever need stronger protection:
-- host the site behind platform login (Netlify Password Protection / Cloudflare Access), or
-- keep the site unlisted and only share direct report links
-  (`yoursite.com/#report/<player-id>`).
+## 4. A note on the password
+The editor password is checked on the server, and every save is checked again on the server,
+so it isn't visible in the page source. Set a strong `ADMIN_PASSWORD` environment variable in
+Netlify. Until you do, the original password is still used.
 
 ---
 
@@ -92,8 +87,10 @@ az2nexthoops/
 ├─ index.html              page shell + header/nav
 ├─ css/style.css           all styling (white "doc" report look)
 ├─ js/
-│  ├─ data.js              SOURCE OF TRUTH — your reports & boards ( regenerated by Publish)
-│  └─ app.js               rendering + password-protected editor
+│  ├─ data.js              levels/positions/board list + offline fallback copy
+│  └─ app.js               rendering, live sync + password-protected editor
+├─ netlify/functions/api.mts   live data API (/api/*)
+├─ db/                    database schema
 ├─ assets/
 │  └─ az2nexthoops-logo.jpg  your logo (unchanged)
 └─ README.md               this file
