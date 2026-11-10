@@ -2,14 +2,13 @@
    AZ2NEXTHOOPS — app logic
    - Public, read-only scouting site (Reports + Ranked Boards).
    - Password-protected Editor lets the owner add/edit reports & boards
-     through forms (no coding). Edits save to the browser; "Publish"
-     downloads an updated data.js to put on the host.
+     through forms (no coding).
+   - All reports and boards live in the shared database behind /api, so
+     every device (Safari, Chrome, phone, desktop) sees the same data.
+     js/data.js only supplies the level/position/board definitions and a
+     fallback copy of the reports if the API can't be reached.
+   - The editor password is checked on the server (ADMIN_PASSWORD env var).
    ===================================================================== */
-
-/* ---------------------------------------------------------------------
-   >>> CHANGE THIS to your own private password (owner-only editor) <<<
-   --------------------------------------------------------------------- */
-const ADMIN_PASSWORD = "zeya2002!"; // <-- edit me
 
 /* ---------- Evaluation pillars (structure the Analysis area) ---------- */
 const PILLARS = [
@@ -86,7 +85,9 @@ const CONTEXT_FIELDS = [
 ];
 
 const POS_GROUPS = { guards:["PG","SG"], wings:["SF"], bigs:["PF","C"] };
-const LS_KEY = "az2nexthoops_data_v1";
+const LS_KEY = "az2nexthoops_data_v1";        // legacy per-browser cache (pre-sync)
+const PW_KEY = "az2nexthoops_editor_pw";      // sessionStorage: keeps editor unlocked on reload
+const REFRESH_MS = 30000;                     // background refresh while the tab is visible
 
 /* ---------- State ---------- */
 let DATA=null;
@@ -96,6 +97,12 @@ let bLevel="NBA", bCat="overall";
 let adminUnlocked=false;
 let currentReaderId=null;
 let suppressHash=false;
+let adminPw="";          // password sent with every write
+let pendingWrites=0;     // writes in flight
+let writeSeq=0;          // bumps on every local change; stale fetches are discarded
+let lastSync=0;
+let lastSnapshot="";     // last /api/data payload, to skip re-rendering when nothing changed
+let online=null;         // null = not loaded yet, true = API reachable, false = offline fallback
 
 /* ============================ Helpers ============================ */
 function el(tag, attrs, children){
@@ -120,11 +127,6 @@ function fmtDate(ts){ if(!ts) return "—"; return new Date(ts).toLocaleDateStri
 function getPlayer(id){ return (DATA.players||[]).find(p=>p.id===id); }
 function catMeta(id){ return DATA.boardCategories.find(c=>c.id===id); }
 function boardAllows(catId,pos){ const c=catMeta(catId); if(!c||!c.byPosition) return true; return (POS_GROUPS[catId]||[]).includes(pos); }
-function download(name,text){
-  const b=new Blob([text],{type:"text/plain"}); const u=URL.createObjectURL(b);
-  const a=el("a",{href:u,download:name}); document.body.appendChild(a); a.click();
-  setTimeout(()=>{ URL.revokeObjectURL(u); a.remove(); },500);
-}
 
 /* ============================ Data layer ============================ */
 function ensurePlayer(p){
@@ -151,16 +153,96 @@ function ensureBoards(){
     });
   });
 }
-function loadData(){
-  const seed=window.SEED_DATA;
-  let local=null;
-  try{ local=JSON.parse(localStorage.getItem(LS_KEY)||"null"); }catch(e){}
-  if(local && local.dataVersion>=seed.dataVersion){ DATA=local; }
-  else { DATA=clone(seed); try{ localStorage.removeItem(LS_KEY); }catch(e){} }
-  DATA.players=(DATA.players||[]).map(ensurePlayer);
+function applyServerData(remote){
+  const seed=window.SEED_DATA||{};
+  DATA={
+    levels: seed.levels||["NBA","College","G-League","International"],
+    positions: seed.positions||["PG","SG","SF","PF","C"],
+    boardCategories: seed.boardCategories||[],
+    players: (remote.players||[]).map(ensurePlayer),
+    boards: remote.boards||{}
+  };
   ensureBoards();
 }
-function saveData(){ try{ localStorage.setItem(LS_KEY,JSON.stringify(DATA)); }catch(e){} }
+function loadData(){
+  // Immediate paint from the bundled copy; replaced by the live database right after.
+  if(!DATA) applyServerData(clone(window.SEED_DATA||{players:[],boards:{}}));
+}
+
+/* ---------- API ---------- */
+async function api(path,opts){
+  opts=opts||{};
+  const headers={"Accept":"application/json"};
+  if(opts.body!==undefined) headers["Content-Type"]="application/json";
+  if(adminPw) headers["x-admin-password"]=adminPw;
+  const sep=path.indexOf("?")>=0?"&":"?";
+  const res=await fetch("/api/"+path+(opts.method&&opts.method!=="GET"?"":sep+"t="+Date.now()),{
+    method:opts.method||"GET", headers, cache:"no-store",
+    body:opts.body!==undefined?JSON.stringify(opts.body):undefined
+  });
+  let data=null; try{ data=await res.json(); }catch(e){}
+  if(!res.ok){ const err=new Error((data&&data.error)||("Request failed ("+res.status+")")); err.status=res.status; throw err; }
+  return data;
+}
+async function refreshData(force){
+  if(!force && (pendingWrites>0 || editorOpen())) return;
+  const seq=writeSeq;
+  try{
+    const remote=await api("data");
+    if(seq!==writeSeq || pendingWrites>0) return; // a local edit happened meanwhile; next refresh picks it up
+    const wasOnline=online; online=true; lastSync=Date.now();
+    const snap=JSON.stringify(remote);
+    if(snap===lastSnapshot && wasOnline) return; // nothing changed — keep scroll/focus as-is
+    const prevReader=currentReaderId?JSON.stringify(getPlayer(currentReaderId)||null):null;
+    lastSnapshot=snap;
+    applyServerData(remote);
+    if(!editorOpen()) render();
+    if(currentReaderId){
+      const id=currentReaderId, p=getPlayer(id);
+      if(!p) closeReader();
+      else if(JSON.stringify(p)!==prevReader){ suppressHash=true; openReader(id); suppressHash=false; }
+    }
+  }catch(e){
+    console.error(e);
+    if(online!==false){ online=false; render(); toast("Couldn't reach the live database — showing the last published copy.",true); }
+  }
+}
+function editorOpen(){ return !!document.getElementById("editorModal") || !!document.getElementById("pwInput"); }
+
+// Run a write against the API. The UI is updated optimistically first; on
+// failure we tell the user and reload the true state from the database.
+async function persist(label,fn){
+  writeSeq++; pendingWrites++;
+  try{ const r=await fn(); online=true; return r; }
+  catch(e){
+    console.error(e);
+    if(e.status===401){ lockEditor(true); toast("Editor session expired — please unlock again. Change not saved.",true); }
+    else toast(label+" failed to save: "+e.message,true);
+    throw e;
+  }
+  finally{
+    pendingWrites--;
+    if(pendingWrites===0) refreshData(true).catch(()=>{});
+  }
+}
+function saveBoard(level,cat){
+  const ids=(DATA.boards[level]&&DATA.boards[level][cat])||[];
+  return persist("Board",()=>api("boards/"+encodeURIComponent(level)+"/"+encodeURIComponent(cat),{method:"PUT",body:{playerIds:ids}})).catch(()=>{});
+}
+
+/* ---------- One-time import of edits stuck in this browser's old cache ---------- */
+function legacyCache(){
+  try{ const d=JSON.parse(localStorage.getItem(LS_KEY)||"null"); return d&&Array.isArray(d.players)?d:null; }catch(e){ return null; }
+}
+async function importLegacy(ask){
+  const local=legacyCache(); if(!local) return;
+  if(ask && !confirm("This browser still has "+local.players.length+" report(s) saved from before live sync.\n\nUpload them to the shared database? Only copies newer than the database version are kept; nothing newer gets overwritten.")) return;
+  try{
+    const r=await persist("Import",()=>api("import",{method:"POST",body:{players:local.players,boards:local.boards||{}}}));
+    try{ localStorage.removeItem(LS_KEY); }catch(e){}
+    toast(r.imported? ("Imported "+r.imported+" report(s) from this browser."):"Nothing newer in this browser — database is already up to date.");
+  }catch(e){}
+}
 
 /* ============================ Render shell ============================ */
 function renderHeader(){
@@ -187,13 +269,13 @@ function renderAdminBar(){
   const bar=el("div",{class:"adminbar"},[
     el("div",{class:"ab-title"},[el("span",{class:"dot"}),"Editor unlocked — only you can change reports & boards"]),
     el("div",{class:"spacer"}),
-    el("button",{class:"btn btn-ghost btn-sm",onclick:publish},[icon("download"),"Publish (download data.js)"]),
-    el("button",{class:"btn btn-ghost btn-sm",onclick:reloadFromFile},[icon("refresh"),"Sync from file"]),
-    el("button",{class:"btn btn-ghost btn-sm",onclick:()=>{ adminUnlocked=false; render(); toast("Editor locked."); }},[icon("lock"),"Lock editor"])
+    legacyCache()? el("button",{class:"btn btn-ghost btn-sm",onclick:()=>importLegacy(true)},[icon("download"),"Import old browser edits"]):null,
+    el("button",{class:"btn btn-ghost btn-sm",onclick:async()=>{ await refreshData(true); toast("Up to date with the live database."); }},[icon("refresh"),"Refresh"]),
+    el("button",{class:"btn btn-ghost btn-sm",onclick:()=>{ lockEditor(); toast("Editor locked."); }},[icon("lock"),"Lock editor"])
   ]);
-  return el("div",{},[bar, el("div",{class:"adminhint"},
-    "Tip: edits save automatically to THIS browser. To push changes to the public site, click Publish, then replace js/data.js on your host. On other devices click “Sync from file” after updating.")
-  ]);
+  const status = online===false ? "Offline — can't reach the live database. Changes can't be saved right now."
+    : "Changes save straight to the live database and show up on every device (phone, tablet, desktop)."+(lastSync?" Last synced "+new Date(lastSync).toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})+".":"");
+  return el("div",{},[bar, el("div",{class:"adminhint"},status)]);
 }
 function icon(name){
   const p={download:"M12 3v12m0 0l-4-4m4 4l4-4M5 21h14",refresh:"M21 12a9 9 0 1 1-3-6.7M21 4v4h-4",lock:"M7 11V7a5 5 0 0 1 10 0v4M5 11h14v10H5z",
@@ -345,13 +427,13 @@ function renderBoardEditor(){
   box.appendChild(cur);
   return el("div",{},[box]);
 }
-function addToBoard(id){ DATA.boards[bLevel][bCat].push(id); saveData(); render(); toast("Added to board."); }
+function addToBoard(id){ const lv=bLevel,c=bCat; DATA.boards[lv][c].push(id); render(); saveBoard(lv,c); toast("Added to board."); }
 function moveBoard(i,dir){
-  const arr=DATA.boards[bLevel][bCat]; const j=i+dir;
+  const lv=bLevel,c=bCat; const arr=DATA.boards[lv][c]; const j=i+dir;
   if(j<0||j>=arr.length) return;
-  [arr[i],arr[j]]=[arr[j],arr[i]]; saveData(); render();
+  [arr[i],arr[j]]=[arr[j],arr[i]]; render(); saveBoard(lv,c);
 }
-function removeFromBoard(i){ DATA.boards[bLevel][bCat].splice(i,1); saveData(); render(); toast("Removed from board."); }
+function removeFromBoard(i){ const lv=bLevel,c=bCat; DATA.boards[lv][c].splice(i,1); render(); saveBoard(lv,c); toast("Removed from board."); }
 
 /* ============================ Reader (white doc) ============================ */
 function openReader(id){
@@ -430,10 +512,28 @@ function promptLogin(){
   showModal(overlay);
   setTimeout(()=>{ const i=document.getElementById("pwInput"); if(i) i.focus(); },50);
 }
-function doLogin(){
-  const v=(document.getElementById("pwInput").value||"").trim();
-  if(v===ADMIN_PASSWORD){ adminUnlocked=true; closeModal(); render(); toast("Editor unlocked — welcome back."); }
-  else { toast("Wrong password.",true); const i=document.getElementById("pwInput"); if(i){ i.value=""; i.focus(); } }
+async function doLogin(){
+  const input=document.getElementById("pwInput"); if(!input) return;
+  const v=(input.value||"").trim(); if(!v) return;
+  try{
+    const res=await fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},cache:"no-store",body:JSON.stringify({password:v})});
+    if(res.ok){
+      adminPw=v; adminUnlocked=true;
+      try{ sessionStorage.setItem(PW_KEY,v); }catch(e){}
+      closeModal(); render(); toast("Editor unlocked — welcome back.");
+      refreshData(true);
+      if(legacyCache()) setTimeout(()=>importLegacy(true),400);
+      return;
+    }
+    toast(res.status===401?"Wrong password.":"Login failed — try again.",true);
+  }catch(e){ toast("Can't reach the server — check your connection.",true); }
+  const i=document.getElementById("pwInput"); if(i){ i.value=""; i.focus(); }
+}
+function lockEditor(silent){
+  adminUnlocked=false; adminPw="";
+  try{ sessionStorage.removeItem(PW_KEY); }catch(e){}
+  if(!silent) closeModal();
+  render();
 }
 
 /* ============================ Editor (add/edit report) ============================ */
@@ -564,36 +664,32 @@ function saveReport(id,isNew){
   const idx=DATA.players.findIndex(p=>p.id===id);
   const rec=ensurePlayer(Object.assign({}, idx>=0?DATA.players[idx]:{id}, d, {updatedAt:Date.now()}));
   if(idx>=0) DATA.players[idx]=rec; else DATA.players.push(rec);
-  // keep player on valid boards for its level; if level/position changed, prune from now-invalid position boards
-  ensureBoards();
-  saveData();
+  // If level/position changed, take the player off boards they no longer belong on.
+  const changedBoards=[];
+  DATA.levels.forEach(lv=>DATA.boardCategories.forEach(c=>{
+    const arr=DATA.boards[lv][c.id];
+    if(arr.includes(id) && !(lv===rec.level && boardAllows(c.id,rec.position))){
+      DATA.boards[lv][c.id]=arr.filter(x=>x!==id); changedBoards.push([lv,c.id]);
+    }
+  }));
+  persist("Report",async()=>{
+    await api("players/"+encodeURIComponent(id),{method:"PUT",body:rec});
+    for(const [lv,c] of changedBoards) await api("boards/"+encodeURIComponent(lv)+"/"+encodeURIComponent(c),{method:"PUT",body:{playerIds:DATA.boards[lv][c]}});
+  }).then(()=>toast(isNew?"Report created.":"Report saved.")).catch(()=>{});
   closeModal();
   if(currentReaderId===id) closeReader();
   render();
-  toast(isNew?"Report created.":"Report saved.");
+  toast("Saving…");
 }
 function deletePlayer(id,fromEditor){
   const p=getPlayer(id); if(!p) return;
   if(!confirm("Delete the scouting report for "+p.name+"? This also removes them from all boards. This cannot be undone.")) { if(fromEditor) return; else return; }
   DATA.players=DATA.players.filter(x=>x.id!==id);
-  ensureBoards(); saveData();
+  ensureBoards();
   closeModal(); if(currentReaderId===id) { currentReaderId=null; }
   render();
-  toast("Report deleted.");
-}
-
-/* ============================ Publish / sync ============================ */
-function publish(){
-  DATA.dataVersion=(DATA.dataVersion||1)+1;
-  saveData();
-  const header="/* =====================================================================\n   AZ2NEXTHOOPS — scouting data (SOURCE OF TRUTH for the public site)\n   Generated by Publish on "+new Date().toISOString()+"\n   Replace js/data.js on your host with this file. See README.md.\n   ===================================================================== */\n\n";
-  download("data.js", header+"window.SEED_DATA = "+JSON.stringify(DATA,null,2)+";\n");
-  toast("Published — data.js downloaded. Replace the file on your host.");
-}
-function reloadFromFile(){
-  if(!confirm("Replace your unsaved browser edits with the latest published data.js on the server?")) return;
-  try{ localStorage.removeItem(LS_KEY); }catch(e){}
-  loadData(); render(); toast("Loaded the latest published data.js.");
+  persist("Delete",()=>api("players/"+encodeURIComponent(id),{method:"DELETE"}))
+    .then(()=>toast("Report deleted.")).catch(()=>{});
 }
 
 /* ============================ Routing / init ============================ */
@@ -609,18 +705,28 @@ function onHash(){
 }
 function init(){
   loadData();
+  try{ const pw=sessionStorage.getItem(PW_KEY); if(pw){ adminPw=pw; adminUnlocked=true; } }catch(e){}
   // nav
   document.querySelectorAll(".nav-btn[data-view]").forEach(b=>b.addEventListener("click",()=>{
     view=b.dataset.view; render();
   }));
   document.getElementById("adminToggle").addEventListener("click",()=>{
-    if(adminUnlocked){ adminUnlocked=false; render(); toast("Editor locked."); }
+    if(adminUnlocked){ lockEditor(); toast("Editor locked."); }
     else promptLogin();
   });
   document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ const r=document.getElementById("modalRoot"); if(r&&r.innerHTML.trim()) closeModal(); } });
   window.addEventListener("hashchange",onHash);
+  // Keep every device current: refresh when the tab comes back into view
+  // (Safari on iOS freezes background tabs), when the network returns, and
+  // periodically while the page is visible.
+  document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") refreshData(); });
+  window.addEventListener("focus",()=>refreshData());
+  window.addEventListener("pageshow",e=>{ if(e.persisted) refreshData(); });
+  window.addEventListener("online",()=>refreshData());
+  setInterval(()=>{ if(document.visibilityState==="visible") refreshData(); },REFRESH_MS);
   render();
-  // open deep link if present
-  if(location.hash && location.hash.indexOf("#report/")===0){ const id=location.hash.slice("#report/".length); if(getPlayer(id)) setTimeout(()=>openReader(id),0); }
+  const deepLink=()=>{ if(location.hash && location.hash.indexOf("#report/")===0){ const id=location.hash.slice("#report/".length); if(getPlayer(id) && currentReaderId!==id) openReader(id); } };
+  deepLink();
+  refreshData(true).then(deepLink);
 }
 document.addEventListener("DOMContentLoaded",init);
